@@ -42,10 +42,12 @@ const Instructor = sequelize.define('instructors', {
     createdAt: {
         type: DataType.DATE,  
         allowNull: true,
+        defaultValue: DataTypes.NOW
     },
     updatedAt: {
         type: DataType.DATE, 
         allowNull: true,
+        defaultValue: DataTypes.NOW
     },
 }, {
     tableName: 'instructors' 

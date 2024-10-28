@@ -1,47 +1,64 @@
 const Student = require('../models/students.model.js');
+const StudentModel = require('../models/students.model.js');
 
-// Get all students
 exports.getAllStudents = async (req, res) => {
-  try {
-    const students = await Student.getAllStudents();
-    res.status(200).json(students);
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  }
+    try {
+        const students = await Student.findAll();
+        res.status(200).json(students);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-// Create a new student
-exports.createStudent = async (req, res) => {
-  try {
-    const newStudent = await Student.createStudent(req.body);
-    res.status(201).json({ message: 'Student created', studentId: newStudent.insertId });
-  } catch (error) {
-    res.status(500).json({ error: 'Could not create student' });
-  }
-};
-
-// Get student by ID
 exports.getStudentById = async (req, res) => {
-  try {
-    const student = await Student.getStudentById(req.params.id);
-    if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+    try {
+        const student = await Student.findByPk(req.params.id);
+        if (student) {
+            res.status(200).json(student);
+        } else {
+            res.status(404).json({ message: 'Student not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.status(200).json(student); 
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  }
 };
 
-// Delete student by ID
-exports.deleteStudentById = async (req, res) => {
-  try {
-    const result = await Student.deleteStudentById(req.params.id);
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Student not found' });
+exports.createStudent = async (req, res) => {
+    try {
+        const newStudent = await Student.create(req.body);
+        res.status(201).json(newStudent);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.status(200).json({ message: 'Student deleted' });
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  }
+};
+
+exports.updateStudent = async (req, res) => {
+    try {
+        const [updated] = await Student.update(req.body, {
+            where: { _id: req.params.id }
+        });
+        if (updated) {
+            const updatedStudent = await Student.findByPk(req.params.id);
+            res.status(200).json(updatedStudent);
+        } else {
+            res.status(404).json({ message: 'Student not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.deleteStudent = async (req, res) => {
+    try {
+        const deleted = await Student.destroy({
+            where: { _id: req.params.id }
+        });
+        if (deleted) {
+            res.status(204).end();
+        } else {
+            res.status(404).json({ message: 'Student not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };

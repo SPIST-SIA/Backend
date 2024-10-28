@@ -1,62 +1,21 @@
-const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
 
-const app = express();
-const port = 5000;
-
-// ========================= Middleware ========================= //
-app.use(bodyParser.json());
+const express = require('express')
+const app = express()
+const cors = require('cors')
+//const pg = require('pg')
+app.use(cors())
+app.use(express.json())
 
 const UserRouter = require('./routes/users');
-app.use('/users', UserRouter);
+app.use('/users', UserRouter)
 
 const InstructorsRouter = require('./routes/instructors');
-app.use('/instructors', InstructorsRouter);
+app.use('/instructors', InstructorsRouter)
 
-// ========================= MySQL Database Connection ========================= //
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',         
-  password: '',         
-  database: 'sample'  
-});
+const StudentsRouter = require('./routes/students');
+app.use('/students', StudentsRouter)
 
-db.connect(err => {
-  if (err) {
-    console.error('Error connecting to MySQL: ', err);
-    return;
-  }
-  console.log('Connected to MySQL');
-});
+const StudentInfoRouter = require('./routes/studentinfo');
+app.use('/studentinfo', StudentInfoRouter)
 
-// ============================= Define API Endpoints ================================ //
-
-// ================== Get all students ===================== //
-app.get('/students', (req, res) => {
-  db.query('SELECT * FROM students', (err, results) => {
-    if (err) throw err;
-    res.json(results);
-  });
-});
-
-// ====================== Get all student info ====================== //
-app.get('/studentinfo', (req, res) => {
-  db.query('SELECT * FROM studentinfo', (err, results) => {
-    if (err) throw err;
-    res.json(results);
-  });
-});
-
-// // =================== Get all instructors ======================== //
-// app.get('/instructors', (req, res) => {
-//   db.query('SELECT * FROM instructors', (err, results) => {
-//     if (err) throw err;
-//     res.json(results);
-//   });
-// });
-
-// ========================= Start the server ========================== //
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+app.listen(5000, () => console.log('server is running at 127.0.0.1:5000'))
