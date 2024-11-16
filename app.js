@@ -8,6 +8,9 @@ app.use(express.json());
 const UserRouter = require('./routes/users');
 app.use('/users', UserRouter);
 
+const UserRouter = require('./routes/users');
+app.use('/users', UserRouter);
+
 const InstructorsRouter = require('./routes/instructors');
 app.use('/instructors', InstructorsRouter);
 
